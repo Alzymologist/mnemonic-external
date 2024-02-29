@@ -233,18 +233,26 @@ fn flash_mock_get_word() {
     let flash_mock_word_list = FlashMockWordList;
     assert_eq!(
         "access",
-        flash_mock_word_list.get_word(Bits11::from(10u16).unwrap()).unwrap()
+        flash_mock_word_list
+            .get_word(Bits11::from(10u16).unwrap())
+            .unwrap()
     );
     assert_eq!(
         "arrive",
-        flash_mock_word_list.get_word(Bits11::from(100u16).unwrap()).unwrap()
+        flash_mock_word_list
+            .get_word(Bits11::from(100u16).unwrap())
+            .unwrap()
     );
     assert_eq!(
         "laptop",
-        flash_mock_word_list.get_word(Bits11::from(1000u16).unwrap()).unwrap()
+        flash_mock_word_list
+            .get_word(Bits11::from(1000u16).unwrap())
+            .unwrap()
     );
     assert_eq!(
         "zoo",
-        flash_mock_word_list.get_word(Bits11::from(TOTAL_WORDS as u16 - 1).unwrap()).unwrap()
+        flash_mock_word_list
+            .get_word(Bits11::from(TOTAL_WORDS as u16 - 1).unwrap())
+            .unwrap()
     );
 }

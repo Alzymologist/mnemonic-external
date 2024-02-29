@@ -40,8 +40,11 @@ impl Bits11 {
         self.0
     }
     pub fn from(i: u16) -> Result<Self, ErrorWordList> {
-        if (i as usize) < TOTAL_WORDS {Ok(Self(i))}
-        else {Err(ErrorWordList::InvalidWordNumber)}
+        if (i as usize) < TOTAL_WORDS {
+            Ok(Self(i))
+        } else {
+            Err(ErrorWordList::InvalidWordNumber)
+        }
     }
 }
 
