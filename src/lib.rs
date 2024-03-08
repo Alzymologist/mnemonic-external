@@ -32,6 +32,8 @@ pub const TOTAL_WORDS: usize = 2048;
 pub const WORD_MAX_LEN: usize = 8;
 pub const SEPARATOR_LEN: usize = 1;
 
+pub const MAX_SEED_LEN: usize = 24;
+
 #[derive(Clone, Copy, Debug)]
 pub struct Bits11(u16);
 
@@ -136,7 +138,7 @@ impl WordSet {
 
     pub fn new() -> Self {
         Self {
-            bits11_set: Vec::new(),
+            bits11_set: Vec::with_capacity(MAX_SEED_LEN),
         }
     }
 
@@ -145,8 +147,10 @@ impl WordSet {
         word: L::Word,
         wordlist: &L,
     ) -> Result<(), ErrorWordList> {
-        let bits11 = wordlist.bits11_for_word(word)?;
-        self.bits11_set.push(bits11);
+        if self.bits11_set.len() < MAX_SEED_LEN {
+            let bits11 = wordlist.bits11_for_word(word)?;
+            self.bits11_set.push(bits11);
+        }
         Ok(())
     }
 
