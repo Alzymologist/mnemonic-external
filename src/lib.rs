@@ -62,7 +62,7 @@ pub trait AsWordList {
         &self,
         prefix: &str,
     ) -> Result<Vec<WordListElement<Self>>, ErrorWordList>;
-    fn bits11_for_word(&self, word: &Self::Word) -> Result<Bits11, ErrorWordList>;
+    fn bits11_for_word(&self, word: &str) -> Result<Bits11, ErrorWordList>;
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -144,7 +144,7 @@ impl WordSet {
 
     pub fn add_word<L: AsWordList>(
         &mut self,
-        word: &L::Word,
+        word: &str,
         wordlist: &L,
     ) -> Result<(), ErrorWordList> {
         if self.bits11_set.len() < MAX_SEED_LEN {

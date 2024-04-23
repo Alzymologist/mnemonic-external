@@ -34,9 +34,9 @@ impl AsWordList for InternalWordList {
         Ok(out)
     }
 
-    fn bits11_for_word(&self, word: &Self::Word) -> Result<Bits11, ErrorWordList> {
+    fn bits11_for_word(&self, word: &str) -> Result<Bits11, ErrorWordList> {
         for (i, element) in WORDLIST_ENGLISH.iter().enumerate() {
-            if element == word {
+            if element == &word {
                 return Bits11::from(i as u16);
             }
         }
