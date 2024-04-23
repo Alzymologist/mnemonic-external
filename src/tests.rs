@@ -61,11 +61,11 @@ impl AsWordList for FlashMockWordList {
         Ok(words_by_prefix)
     }
 
-    fn bits11_for_word(&self, word: Self::Word) -> Result<Bits11, ErrorWordList> {
+    fn bits11_for_word(&self, word: &Self::Word) -> Result<Bits11, ErrorWordList> {
         for bits_u16 in 0..TOTAL_WORDS {
             let bits11 = Bits11::from(bits_u16 as u16)?;
             let read_word = self.get_word(bits11)?;
-            if word == read_word {
+            if word == &read_word {
                 return Ok(bits11);
             }
         }
@@ -204,7 +204,7 @@ fn flash_mock_phrase_to_entropy() {
         let mut word_set = WordSet::new();
         for word in known[0].split(' ') {
             word_set
-                .add_word(word.to_string(), &flash_mock_word_list)
+                .add_word(&word.to_string(), &flash_mock_word_list)
                 .unwrap();
         }
         let entropy_calc = word_set.to_entropy().unwrap();
@@ -220,7 +220,7 @@ fn internal_phrase_to_entropy() {
         let entropy_set = hex::decode(known[1]).unwrap();
         let mut word_set = WordSet::new();
         for word in known[0].split(' ') {
-            word_set.add_word(word, &internal_word_list).unwrap();
+            word_set.add_word(&word, &internal_word_list).unwrap();
         }
         let entropy_calc = word_set.to_entropy().unwrap();
         assert_eq!(entropy_calc, entropy_set);
