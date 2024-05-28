@@ -1,7 +1,7 @@
 #[cfg(feature = "std")]
-use thiserror::Error;
+use std::fmt::{Debug, Display, Formatter, Result};
 #[cfg(feature = "std")]
-use std::fmt::{Result, Formatter, Display, Debug};
+use thiserror::Error;
 
 #[derive(Debug)]
 #[cfg_attr(feature = "std", derive(Error))]
