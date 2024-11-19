@@ -234,7 +234,7 @@ impl WordSet {
 
         entropy.push(last_byte);
 
-        let entropy_len = mnemonic_type.entropy_bits() / BITS_IN_BYTE;
+        let entropy_len = mnemonic_type.entropy_bits().div_ceil(BITS_IN_BYTE);
 
         let actual_checksum = checksum(entropy[entropy_len], mnemonic_type.checksum_bits());
 
