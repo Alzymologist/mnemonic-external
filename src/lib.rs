@@ -228,7 +228,7 @@ impl WordSet {
         let mut last_byte: u8 = 0;
         for (i, bit) in remainder.iter().rev().enumerate() {
             if *bit {
-                last_byte |= 1 << BITS_IN_BYTE - remainder.len() + i
+                last_byte |= 1 << (BITS_IN_BYTE - remainder.len() + i)
             }
         }
 
