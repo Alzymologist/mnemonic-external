@@ -4,17 +4,15 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-bitvec = { version = "1.0.1", default-features = false, features = ["alloc"] }
 sha2 = { version = "0.10.6", default-features = false }
-
-thiserror = { version = "1", optional = true }
+zeroize = {version = "1.8.1", features = ["derive"]}
 
 [dev-dependencies]
 hex = "0.4.3"
 
 [features]
 default = ["std", "sufficient-memory"]
-std = ["thiserror"]
+std = []
 sufficient-memory = []
 
 [lib]

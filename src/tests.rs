@@ -4,7 +4,7 @@ use alloc::{string::String, vec::Vec};
 #[cfg(feature = "std")]
 use std::{string::String, vec::Vec};
 
-use crate::error::ErrorWordList;
+use crate::error::ErrorMnemonic;
 
 #[cfg(feature = "sufficient-memory")]
 use crate::regular::InternalWordList;
@@ -29,19 +29,19 @@ struct FlashMockWordList;
 impl AsWordList for FlashMockWordList {
     type Word = String;
 
-    fn get_word(&self, bits: Bits11) -> Result<Self::Word, ErrorWordList> {
+    fn get_word(&self, bits: Bits11) -> Result<Self::Word, ErrorMnemonic> {
         let word_order = bits.bits() as usize;
         let mut word_bytes = unsafe {
             FLASH_MOCK[word_order * WORD_MAX_LEN..(word_order + 1) * WORD_MAX_LEN].to_vec()
         };
         word_bytes = word_bytes.into_iter().take_while(|x| *x != 255).collect();
-        String::from_utf8(word_bytes).map_err(|_| ErrorWordList::DamagedWord)
+        String::from_utf8(word_bytes).map_err(|_| ErrorMnemonic::DamagedWord)
     }
 
     fn get_words_by_prefix(
         &self,
         prefix: &str,
-    ) -> Result<Vec<WordListElement<Self>>, ErrorWordList> {
+    ) -> Result<Vec<WordListElement<Self>>, ErrorMnemonic> {
         let mut words_by_prefix: Vec<WordListElement<Self>> = Vec::new();
         for bits_u16 in 0..TOTAL_WORDS {
             let bits11 = Bits11::from(bits_u16 as u16)?;
@@ -55,7 +55,7 @@ impl AsWordList for FlashMockWordList {
         Ok(words_by_prefix)
     }
 
-    fn bits11_for_word(&self, word: &str) -> Result<Bits11, ErrorWordList> {
+    fn bits11_for_word(&self, word: &str) -> Result<Bits11, ErrorMnemonic> {
         for bits_u16 in 0..TOTAL_WORDS {
             let bits11 = Bits11::from(bits_u16 as u16)?;
             let read_word = self.get_word(bits11)?;
@@ -63,7 +63,7 @@ impl AsWordList for FlashMockWordList {
                 return Ok(bits11);
             }
         }
-        Err(ErrorWordList::NoWord)
+        Err(ErrorMnemonic::NoWord)
     }
 }
 
