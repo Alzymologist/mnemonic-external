@@ -124,8 +124,8 @@ impl BitsHelper {
     }
 
     fn extend_from_byte(&mut self, byte: u8) {
-        for i in 0..BITS_IN_BYTE {
-            let bit = (byte & (1 << (BITS_IN_BYTE - 1 - i))) != 0;
+        for i in (0..BITS_IN_BYTE).rev() {
+            let bit = (byte & (1 << i)) != 0;
             self.bits.push(bit);
         }
     }
@@ -134,8 +134,8 @@ impl BitsHelper {
         let two_bytes = bits11.0.to_be_bytes();
 
         // last 3 bits of first byte - others are always zero
-        for i in (BITS_IN_BYTE - BITS_IN_U11 % BITS_IN_BYTE)..BITS_IN_BYTE {
-            let bit = (two_bytes[0] & (1 << (BITS_IN_BYTE - 1 - i))) != 0;
+        for i in (0..BITS_IN_U11 % BITS_IN_BYTE).rev() {
+            let bit = (two_bytes[0] & (1 << i)) != 0;
             self.bits.push(bit);
         }
 
@@ -169,9 +169,9 @@ impl WordSet {
         let mut bits11_set: Vec<Bits11> = Vec::with_capacity(MAX_SEED_LEN);
         for chunk in entropy_bits.bits.chunks_exact(BITS_IN_U11) {
             let mut bits11: u16 = 0;
-            for (i, bit) in chunk.iter().enumerate() {
+            for (i, bit) in chunk.iter().rev().enumerate() {
                 if *bit {
-                    bits11 |= 1 << (BITS_IN_U11 - 1 - i)
+                    bits11 |= 1 << i
                 }
             }
             bits11_set.push(Bits11(bits11));
@@ -212,15 +212,27 @@ impl WordSet {
 
         let mut entropy: Vec<u8> = Vec::with_capacity(mnemonic_type.total_bits() / BITS_IN_BYTE);
 
-        for chunk in entropy_bits.bits.chunks(BITS_IN_BYTE) {
+        let chunks_exact = entropy_bits.bits.chunks_exact(BITS_IN_BYTE);
+        let remainder = chunks_exact.remainder();
+
+        for chunk in chunks_exact {
             let mut byte: u8 = 0;
-            for (i, bit) in chunk.iter().enumerate() {
+            for (i, bit) in chunk.iter().rev().enumerate() {
                 if *bit {
-                    byte |= 1 << (BITS_IN_BYTE - 1 - i)
+                    byte |= 1 << i
                 }
             }
             entropy.push(byte);
         }
+
+        let mut last_byte: u8 = 0;
+        for (i, bit) in remainder.iter().rev().enumerate() {
+            if *bit {
+                last_byte |= 1 << BITS_IN_BYTE - remainder.len() + i
+            }
+        }
+
+        entropy.push(last_byte);
 
         let entropy_len = mnemonic_type.entropy_bits() / BITS_IN_BYTE;
 
